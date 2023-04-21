@@ -58,4 +58,5 @@ A simple multi-page Airbnb clone that uses a server-side Javascript to display i
 
 
 ## How to Run the Application
+Use the command `npm run terminal` to start the server.
 If you get an error that the port 3000 is already in use, use  `npx kill-port 3000` command to kill the process and start again.
