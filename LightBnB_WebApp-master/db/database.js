@@ -9,7 +9,8 @@ const pool = new Pool({
   database: "lightbnb",
 });
 
-pool.query(`SELECT title FROM properties LIMIT 10;`).then((response) => {
+pool.query(`SELECT title FROM properties LIMIT 10;`)
+  .then((response) => {
   console.log(response);
 });
 
@@ -39,8 +40,7 @@ const getUserWithEmail = function (email) {
 const getUserWithId = function (id) {
   return pool
     .query(`SELECT * FROM users WHERE id = $1`, [id])
-    .then((result) => {
-      console.log("User with id", result.rows[0]);
+    .then((result) => {      
       return result.rows[0];
     })
     .catch((err) => {
@@ -77,7 +77,7 @@ const addUser = function (user) {
 const getAllReservations = function (guest_id, limit = 10) {
   return pool
     .query(
-      `SELECT reservations.*, properties.title, properties.cost_per_night, reservations.start_date, avg(rating) as average_rating
+      `SELECT reservations.*, properties.title, properties.cost_per_night, reservations.start_date, AVG(rating) as average_rating
 FROM reservations
 JOIN properties ON reservations.property_id = properties.id
 JOIN property_reviews ON properties.id = property_reviews.property_id
@@ -85,9 +85,7 @@ WHERE reservations.guest_id = $1
 GROUP BY properties.id, reservations.id
 ORDER BY reservations.start_date
 LIMIT 10;
-`,
-      [guest_id]
-    )
+`, [guest_id])
     .then((result) => {
       return result.rows;
     })
@@ -134,7 +132,7 @@ WHERE true
 
   if (options.minimum_rating) {
     queryParams.push(`${options.minimum_rating}`);
-    queryString += ` HAVING avg(property_reviews.rating) >= $${queryParams.length}`;
+    queryString += ` HAVING AVG(property_reviews.rating) >= $${queryParams.length}`;
   }
   queryParams.push(limit);
   queryString += `
@@ -144,7 +142,8 @@ WHERE true
 
   console.log(queryString, queryParams);
 
-  return pool.query(queryString, queryParams).then((res) => res.rows);
+  return pool.query(queryString, queryParams)
+    .then((res) => res.rows);
 };
 
 /**
