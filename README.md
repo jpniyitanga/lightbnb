@@ -44,7 +44,7 @@ A simple multi-page Airbnb clone that uses a server-side Javascript to display i
   . db contains all the database interaction code.
     . json is a directory that contains a bunch of dummy data in .json files.
     . database.js is responsible for all queries to the database. It doesn't currently connect to any database, all it does is return data from .json files.
-  . public contains all of the HTML, CSS, and client side JavaScript.
+  . public contains all of the HTML, CSS, and client side JavaScript.q
     . index.html is the entry point to the application. It's the only html page because this is a single page application.
     . javascript contains all of the client side javascript files.
         . index.js starts up the application by rendering the listings.
