@@ -54,10 +54,17 @@ const getUserWithId = function (id) {
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function (user) {
-  const userId = Object.keys(users).length + 1;
-  user.id = userId;
-  users[userId] = user;
-  return Promise.resolve(user);
+  return pool
+    .query(
+      `INSERT INTO  users (name, email, password) VALUES ($1, $2, $3) RETURNING *`,
+      [user.name, user.email, user.password]
+    )
+    .then((result) => {
+      return result.rows[0];
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
 };
 
 /// Reservations
@@ -68,7 +75,25 @@ const addUser = function (user) {
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function (guest_id, limit = 10) {
-  return getAllProperties(null, 2);
+  return pool
+    .query(
+      `SELECT reservations.*, properties.title, properties.cost_per_night, reservations.start_date, avg(rating) as average_rating
+FROM reservations
+JOIN properties ON reservations.property_id = properties.id
+JOIN property_reviews ON properties.id = property_reviews.property_id
+WHERE reservations.guest_id = $1
+GROUP BY properties.id, reservations.id
+ORDER BY reservations.start_date
+LIMIT 10;
+`,
+      [guest_id]
+    )
+    .then((result) => {
+      return result.rows;
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
 };
 
 /// Properties
