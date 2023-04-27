@@ -1,5 +1,3 @@
-const properties = require("./json/properties.json");
-const users = require("./json/users.json");
 const { Pool } = require("pg");
 
 const pool = new Pool({
@@ -39,8 +37,7 @@ const getUserWithEmail = function (email) {
 const getUserWithId = function (id) {
   return pool
     .query(`SELECT * FROM users WHERE id = $1`, [id])
-    .then((result) => {
-      console.log("User with id", result.rows[0]);
+    .then((result) => {      
       return result.rows[0];
     })
     .catch((err) => {
@@ -145,8 +142,6 @@ WHERE true
   ORDER BY cost_per_night
   LIMIT $${queryParams.length};
   `;
-
-  console.log(queryString, queryParams);
 
   return pool.query(queryString, queryParams).then((res) => res.rows);
 };
